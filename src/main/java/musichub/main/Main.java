@@ -38,7 +38,7 @@ public class Main
 					System.out.println(theHub.getAlbumsTitlesSortedByDate());
 					chooseSong();
 					choice = scan.nextLine();
-					stream(choice);
+					stream("aaa");
 
 				break;
 				case 'g':
