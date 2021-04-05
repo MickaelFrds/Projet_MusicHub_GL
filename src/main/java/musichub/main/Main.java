@@ -2,25 +2,19 @@ package musichub.main;
 
 import musichub.business.*;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
 import javax.swing.JOptionPane;
 
 public class Main
 {
-	private final int BUFFER_SIZE = 128000;
-	private File soundFile;
-	private AudioInputStream audioStream;
-	private AudioFormat audioFormat;
-	private SourceDataLine sourceLine;
- 	public static void main (String[] args) {
 
+ 	public static void main (String[] args) {
 		MusicHub theHub = new MusicHub ();
 		
 		System.out.println("Type h for available commands");
@@ -44,7 +38,7 @@ public class Main
 					System.out.println(theHub.getAlbumsTitlesSortedByDate());
 					chooseSong();
 					choice = scan.nextLine();
-					playSound(choice);
+					stream(choice);
 
 				break;
 				case 'g':
@@ -284,6 +278,41 @@ public class Main
 
 	private static void chooseSong(){
 		System.out.println("Type the song name");
+	}
+
+
+	private static void stream(String filename) {
+		SourceDataLine line = null;
+		int BUFFER_SIZE = 4096; // 4K buffer
+		try {
+			InputStream is = StdAudio.class.getResourceAsStream(filename);
+			AudioInputStream ais = AudioSystem.getAudioInputStream(is);
+			AudioFormat audioFormat = ais.getFormat();
+			DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
+			line = (SourceDataLine) AudioSystem.getLine(info);
+			line.open(audioFormat);
+			line.start();
+			byte[] samples = new byte[BUFFER_SIZE];
+			int count = 0;
+			while ((count = ais.read(samples, 0, BUFFER_SIZE)) != -1) {
+				line.write(samples, 0, count);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		}
+		catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (line != null) {
+				line.drain();
+				line.close();
+			}
+		}
 	}
 
 }
