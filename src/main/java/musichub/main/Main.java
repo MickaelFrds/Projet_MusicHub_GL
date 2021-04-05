@@ -4,9 +4,21 @@ import musichub.business.*;
 
 import java.util.Iterator;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.SourceDataLine;
+import javax.swing.JOptionPane;
 
 public class Main
 {
+	private final int BUFFER_SIZE = 128000;
+	private File soundFile;
+	private AudioInputStream audioStream;
+	private AudioFormat audioFormat;
+	private SourceDataLine sourceLine;
  	public static void main (String[] args) {
 
 		MusicHub theHub = new MusicHub ();
@@ -30,8 +42,10 @@ public class Main
 				case 't':
 					//album titles, ordered by date
 					System.out.println(theHub.getAlbumsTitlesSortedByDate());
-					printAvailableCommands();
+					chooseSong();
 					choice = scan.nextLine();
+					playSound(choice);
+
 				break;
 				case 'g':
 					//songs of an album, sorted by genre
@@ -233,7 +247,26 @@ public class Main
 		}
 		scan.close();
 	}
-	
+
+
+
+	private static void printAvailableCommandsSong() {
+		System.out.println("k: play");
+		System.out.println("b: pause");
+		System.out.println("t: display the album titles, ordered by date");
+		System.out.println("g: display songs of an album, ordered by genre");
+		System.out.println("d: display songs of an album");
+		System.out.println("u: display audiobooks ordered by author");
+		System.out.println("c: add a new song");
+		System.out.println("a: add a new album");
+		System.out.println("+: add a song to an album");
+		System.out.println("l: add a new audiobook");
+		System.out.println("p: create a new playlist from existing songs and audio books");
+		System.out.println("-: delete an existing playlist");
+		System.out.println("s: save elements, albums, playlists");
+		System.out.println("q: quit program");
+	}
+
 	private static void printAvailableCommands() {
 		System.out.println("t: display the album titles, ordered by date");
 		System.out.println("g: display songs of an album, ordered by genre");
@@ -248,4 +281,9 @@ public class Main
 		System.out.println("s: save elements, albums, playlists");
 		System.out.println("q: quit program");
 	}
+
+	private static void chooseSong(){
+		System.out.println("Type the song name");
+	}
+
 }
