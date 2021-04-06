@@ -33,32 +33,14 @@ public class Client {
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
         Scanner scan = new Scanner(System.in);
-        Object cmd ;
-        while (true){
+        System.out.println("Type 'h' to display the menu : ");
+        Object cmd="a";
+        while (!cmd.equals("q")) {
             cmd = scan.nextLine();
-            if (cmd.equals("h"))printAvailableCommands();
             out.writeObject(cmd);
             Object recu = in.readObject();
             System.out.println(recu);
         }
     }
-
-    private void printAvailableCommands() {
-        System.out.println("a: display the album titles");
-        System.out.println("p: display the playlist titles");
-        System.out.println("s: display all songs");
-
-        System.out.println("+a: add a new song");
-        System.out.println("+p: add a new album");
-        System.out.println("+s: add a new playlist");
-        System.out.println("h: menu");
-        /*
-        System.out.println("+: add a song to an album");
-        System.out.println("p: create a new playlist from existing songs and audio books");
-        System.out.println("-: delete an existing playlist");
-        System.out.println("s: save elements, albums, playlists");
-        System.out.println("q: quit program");
-         */
-    }
-
 }
+

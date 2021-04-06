@@ -55,6 +55,9 @@ public class RequestManager {
                 case "+s":
 
                     break;
+                case "h":
+                    printAvailableCommands();
+                    break;
                 default:
                     envoi = "This command doesn't exist \n Please retry !" ;
                     out.writeObject(envoi);
@@ -63,6 +66,8 @@ public class RequestManager {
             cmd = (String)in.readObject();
         }
     }
+
+    public void createSong(){}
 
     public void createAlbum() throws IOException, ClassNotFoundException {
         String envoi;
@@ -96,10 +101,37 @@ public class RequestManager {
         out.writeObject("Playlist "+titlePlaylist+" is created");
     }
 
-    public void getSongs() {
+
+
+    public void load(){
 
     }
-/*
 
- */
+    public void Save(MusicHub musicHub){
+        MusicHub musicHubLastVersion = new MusicHub();
+
+
+    }
+
+    private void printAvailableCommands() throws IOException {
+        StringBuffer menu =new StringBuffer();
+        menu.append("a: display the album titles \n");
+        menu.append("p: display the playlist titles \n");
+        menu.append("s: display all songs \n");
+        menu.append("+a: add a new song\n");
+        menu.append("+p: add a new album\n");
+        menu.append("+s: add a new playlist\n");
+        menu.append("h: menu \n");
+        menu.append(" \n");
+        menu.append(" \n");
+        out.writeObject(menu);
+        /*
+        System.out.println("+: add a song to an album");
+        System.out.println("p: create a new playlist from existing songs and audio books");
+        System.out.println("-: delete an existing playlist");
+        System.out.println("s: save elements, albums, playlists");
+        System.out.println("q: quit program");
+         */
+    }
+
 }
