@@ -16,20 +16,15 @@ public class Client {
         try  {
             //create the socket; it is defined by an remote IP address (the address of the server) and a port number
             socket = new Socket(ip, port);
-
-            //create the streams that will handle the objects coming and going through the sockets
             output = new ObjectOutputStream(socket.getOutputStream());
             input = new ObjectInputStream(socket.getInputStream());
-
-            String textToSend = new String("Je me connecte");
-            System.out.println("text sent to the server: " + textToSend);
-            output.writeObject(textToSend);		//serialize and write the String to the stream
-        } catch  (UnknownHostException uhe) {
+            String cmd = "h";
+            output.writeObject(cmd);
+            String album = (String)input.readObject();
+            System.out.println(album);
+        } catch  (IOException | ClassNotFoundException uhe) {
             uhe.printStackTrace();
-        } catch  (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 input.close();
                 output.close();
@@ -38,5 +33,21 @@ public class Client {
                 ioe.printStackTrace();
             }
         }
+    }
+
+    public void addSong(){
+
+    }
+
+    public void addAlbum(){
+
+    }
+
+    public void addPlaylist(){
+
+    }
+
+    public void getAlbum(Socket socket) throws IOException, ClassNotFoundException {
+
     }
 }
