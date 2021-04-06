@@ -1,7 +1,9 @@
 package musichub.main;
 
+import musichub.Exception.NoAlbumFoundException;
+import musichub.Exception.NoElementFoundException;
+import musichub.Exception.NoPlayListFoundException;
 import musichub.business.*;
-
 import java.util.Iterator;
 import java.util.Scanner;
 

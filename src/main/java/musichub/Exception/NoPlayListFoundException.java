@@ -1,4 +1,4 @@
-package musichub.business;
+package musichub.Exception;
 
 public class NoPlayListFoundException extends Exception {
 

@@ -1,6 +1,7 @@
 package musichub.business;
 
 import musichub.util.XMLHandler;
+import musichub.Exception.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,16 +31,16 @@ class SortByAuthor implements Comparator<AudioElement>
 }
 
 public class MusicHub {
-	private List<Album> albums;
-	private List<PlayList> playlists;
-	private List<AudioElement> elements;
+	private  List<Album> albums;
+	private  List<PlayList> playlists;
+	private  List<AudioElement> elements;
 	
 	public static final String DIR = System.getProperty("user.dir");
 	public static final String ALBUMS_FILE_PATH = DIR + "\\files\\albums.xml";
 	public static final String PLAYLISTS_FILE_PATH = DIR + "\\files\\playlists.xml";
 	public static final String ELEMENTS_FILE_PATH = DIR + "\\files\\elements.xml";
 	
-	private XMLHandler xmlHandler = new XMLHandler();
+	private final XMLHandler xmlHandler = new XMLHandler();
 	
 	public MusicHub () {
 		albums = new LinkedList<Album>();
@@ -89,7 +90,7 @@ public class MusicHub {
 	public Iterator<AudioElement> elements() { 
 		return elements.listIterator();
 	}
-	
+
 	public String getAlbumsTitlesSortedByDate() {
 		StringBuffer titleList = new StringBuffer();
 		Collections.sort(albums, new SortByDate());
@@ -107,6 +108,20 @@ public class MusicHub {
 		Collections.sort(audioBookList, new SortByAuthor());
 		for (AudioElement ab : audioBookList)
 			titleList.append(ab.getArtist()+ "\n");
+		return titleList.toString();
+	}
+
+	public String getPlaylist(){
+		StringBuffer titleList = new StringBuffer();
+		for (PlayList al : playlists)
+			titleList.append(al.getTitle()+ "\n");
+		return titleList.toString();
+	}
+
+	public String getAlbum(){
+		StringBuffer titleList = new StringBuffer();
+		for (Album al : albums)
+			titleList.append(al.getTitle()+ "\n");
 		return titleList.toString();
 	}
 
@@ -219,7 +234,7 @@ public class MusicHub {
 		} else throw new NoPlayListFoundException("Playlist " + playListTitle + " not found!");
 		
 	}
-	
+
 	private void loadAlbums () {
 		NodeList albumNodes = xmlHandler.parseXMLFile(ALBUMS_FILE_PATH);
 		if (albumNodes == null) return;
@@ -339,5 +354,5 @@ public class MusicHub {
 			}
 		}
 		xmlHandler.createXMLFile(document, ELEMENTS_FILE_PATH);
- 	}	
+ 	}
 }
