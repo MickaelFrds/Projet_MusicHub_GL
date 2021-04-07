@@ -1,6 +1,6 @@
 package musichub.main;
 
-import musichub.business.Server;
+import musichub.server_client.Server;
 
 import java.io.IOException;
 

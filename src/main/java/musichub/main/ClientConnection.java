@@ -1,12 +1,10 @@
 package musichub.main;
 
-import musichub.business.Client;
-
-import java.io.IOException;
+import musichub.server_client.*;
 
 public class ClientConnection {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
         Client client1 = new Client();
         client1.connect("localHost");
     }
