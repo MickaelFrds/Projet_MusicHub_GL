@@ -5,6 +5,9 @@ import musichub.Exception.NoPlayListFoundException;
 import musichub.business.Album;
 import musichub.business.MusicHub;
 import musichub.business.PlayList;
+import musichub.business.Song;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,47 +28,67 @@ public class RequestManager {
     }
 
     public void request() throws IOException, ClassNotFoundException, NoPlayListFoundException, NoElementFoundException {
-        StringBuffer text =new StringBuffer();
         MusicHub musicHub = new MusicHub();
         String envoi;
-        Object recu = in.readObject();
-        String cmd =(String)recu;
-        while (!((String) cmd).equals("q")){
-            switch (cmd)
-            {
-                case "a" :
-                    envoi = musicHub.getTitleAlbum();
-                    text.append("Liste des albums :\n" + envoi );
-                    out.writeObject(text.toString());
-                    break;
-                case "p" :
-                    envoi = musicHub.getTitlePlaylist();
+        Object cmd = in.readObject();
+        while (!(cmd).equals("q")){
+            switch ((String) cmd) {
+                case "a" -> sendAlbum(musicHub);
+                case "p" -> sendPlaylist(musicHub);
+                case "s" -> sendSongs(musicHub);
+                case "+a" -> createAlbum(musicHub);
+                case "+p" -> createPlaylist();
+                case "+s" -> createSong();
+                case "h" -> printAvailableCommands();
+                default -> {
+                    envoi = "This command doesn't exist \n Please retry !";
                     out.writeObject(envoi);
-                    break;
-                case "s" :
-                    envoi = musicHub.getTitleSongs();
-                    out.writeObject(envoi);
-                    break;
-                case "+a":
-                    createAlbum();
-                    break;
-                case "+p":
-                    //createPlaylist();
-                    break;
-                case "+s":
-
-                    break;
-                default:
-                    envoi = "This command doesn't exist \n Please retry !" ;
-                    out.writeObject(envoi);
-                    break;
+                }
             }
-            cmd = (String)in.readObject();
+            cmd = in.readObject();
         }
     }
 
-    public void createAlbum() throws IOException, ClassNotFoundException {
-        String envoi;
+
+
+
+    public void sendAlbum(MusicHub musicHub) throws IOException {
+        StringBuffer text =new StringBuffer();
+        String TitleAlbums = musicHub.getTitleAlbum();
+        text.append("Liste des albums :\n" + TitleAlbums );
+        out.writeObject(text.toString());
+    }
+
+    public  void sendPlaylist(MusicHub musicHub){
+       try {
+           String envoi = musicHub.getTitlePlaylist();
+           out.writeObject(envoi);
+       } catch (IOException e) {
+            System.out.println(e.toString());
+       }
+    }
+
+    public void sendSongs(MusicHub musicHub) throws IOException {
+        String envoi = musicHub.getTitleSongs();
+        out.writeObject(envoi);
+    }
+
+    public void createSong() throws IOException, ClassNotFoundException {
+        out.writeObject("Title :");
+        Object sTitle = in.readObject();
+        out.writeObject("Artiste :");
+        Object sArtist = in.readObject();
+        out.writeObject("Length :");
+        Object sLength = in.readObject();
+        out.writeObject("Content :");
+        Object sContent = in.readObject();
+        out.writeObject("Genre : (jazz,classic,hiphop,rock,pop,rap)");
+        Object sGenre = in.readObject();
+        Song s =new Song( (String) sTitle, (String) sArtist, Integer.parseInt((String) sLength) , (String) sContent, (String) sGenre);
+        out.writeObject("Song :" + s.getTitle()+ "has created !");
+    }
+
+    public void createAlbum(MusicHub musicHub) throws IOException, ClassNotFoundException {
         out.writeObject("Title :");
         Object aTitle = in.readObject();
         out.writeObject("Artiste :");
@@ -75,31 +98,39 @@ public class RequestManager {
         out.writeObject("Date : (format : YYYY-DD-MM)");
         Object aDate = in.readObject();
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
-        envoi = a.getTitle();
-        out.writeObject("Album : "+envoi+" has created !");
+        out.writeObject("Album : "+a.getTitle()+" has created !");
+        //musicHub.addAlbum(a);
     }
 
-    public void createPlaylist() throws IOException, ClassNotFoundException, NoElementFoundException, NoPlayListFoundException {
-        String envoi;
-        MusicHub musicHub = new MusicHub();
+    public void createPlaylist() throws IOException, ClassNotFoundException {
         out.writeObject("Type the name of the playlist you wish to create:");
         Object titlePlaylist = in.readObject();
         PlayList pl = new PlayList((String) titlePlaylist);
-        Object cmd = "a";
-        while (cmd != "n"){
-            out.writeObject("Available elements:  ");
-            Object titleElement = in.readObject();
-            musicHub.addElementToPlayList((String) titleElement,(String) titlePlaylist);
-            out.writeObject("Do you want to stop [y/n] :");
-            cmd = in.readObject();
-        }
-        out.writeObject("Playlist "+titlePlaylist+" is created");
+        out.writeObject("Playlist "+pl.getTitle()+" is created");
     }
 
-    public void getSongs() {
 
+
+
+    private void printAvailableCommands() throws IOException {
+        StringBuffer menu =new StringBuffer();
+        menu.append("a: display the album titles \n");
+        menu.append("p: display the playlist titles \n");
+        menu.append("s: display all songs \n");
+        menu.append("+a: add a new album\n");
+        menu.append("+p: add a new playlist\n");
+        menu.append("+s: add a new song\n");
+        menu.append("h: menu \n");
+        menu.append(" \n");
+        menu.append(" \n");
+        out.writeObject(menu);
+        /*
+        System.out.println("+: add a song to an album");
+        System.out.println("p: create a new playlist from existing songs and audio books");
+        System.out.println("-: delete an existing playlist");
+        System.out.println("s: save elements, albums, playlists");
+        System.out.println("q: quit program");
+         */
     }
-/*
 
- */
 }
