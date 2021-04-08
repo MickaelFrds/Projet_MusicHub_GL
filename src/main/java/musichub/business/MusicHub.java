@@ -111,17 +111,41 @@ public class MusicHub {
 		return titleList.toString();
 	}
 
-	public String getPlaylist(){
+	public String getTitlePlaylist(){
 		StringBuffer titleList = new StringBuffer();
 		for (PlayList al : playlists)
 			titleList.append(al.getTitle()+ "\n");
 		return titleList.toString();
 	}
 
-	public String getAlbum(){
+	public String getTitleAlbum(){
 		StringBuffer titleList = new StringBuffer();
 		for (Album al : albums)
 			titleList.append(al.getTitle()+ "\n");
+		return titleList.toString();
+	}
+
+	public String getTitleSongs(){
+		StringBuffer titleList = new StringBuffer();
+		for (AudioElement el : elements)
+		{
+			if (el instanceof Song ){
+			titleList.append(el.getTitle() + "\n");
+			}
+		}
+
+		return titleList.toString();
+	}
+
+	public String getTitleAudioBook(){
+		StringBuffer titleList = new StringBuffer();
+		for (AudioElement el : elements)
+		{
+			if (el instanceof AudioBook ){
+				titleList.append(el.getTitle() + "\n");
+			}
+		}
+
 		return titleList.toString();
 	}
 

@@ -25,7 +25,8 @@ public class Song extends AudioElement {
 			throw ex;
 		}
 	}
-	
+
+
 	public void setGenre (String genre) {	
 		switch (genre.toLowerCase()) {
 			case "jazz":
