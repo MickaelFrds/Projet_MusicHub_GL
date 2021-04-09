@@ -31,9 +31,9 @@ class SortByAuthor implements Comparator<AudioElement>
 }
 
 public class MusicHub {
-	private  List<Album> albums;
-	private  List<PlayList> playlists;
-	private  List<AudioElement> elements;
+	public  List<Album> albums;
+	public  List<PlayList> playlists;
+	public  List<AudioElement> elements;
 	
 	public static final String DIR = System.getProperty("user.dir");
 	public static final String ALBUMS_FILE_PATH = DIR + "\\files\\albums.xml";
@@ -259,7 +259,7 @@ public class MusicHub {
 		
 	}
 
-	private void loadAlbums () {
+	public void loadAlbums() {
 		NodeList albumNodes = xmlHandler.parseXMLFile(ALBUMS_FILE_PATH);
 		if (albumNodes == null) return;
 				
@@ -277,7 +277,7 @@ public class MusicHub {
 		}
 	}
 	
-	private void loadPlaylists () {
+	public void loadPlaylists() {
 		NodeList playlistNodes = xmlHandler.parseXMLFile(PLAYLISTS_FILE_PATH);
 		if (playlistNodes == null) return;
 		
@@ -295,7 +295,7 @@ public class MusicHub {
 		}
 	}
 	
-	private void loadElements () {
+	public void loadElements() {
 		NodeList audioelementsNodes = xmlHandler.parseXMLFile(ELEMENTS_FILE_PATH);
 		if (audioelementsNodes == null) return;
 		
@@ -379,4 +379,5 @@ public class MusicHub {
 		}
 		xmlHandler.createXMLFile(document, ELEMENTS_FILE_PATH);
  	}
+
 }
