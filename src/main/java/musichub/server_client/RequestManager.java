@@ -25,35 +25,46 @@ public class RequestManager {
     Object cmd;
 
 
-    public RequestManager(Socket s) throws IOException {
-        this.socket=s;
-        this.out = new ObjectOutputStream(socket.getOutputStream());
-        this.in = new ObjectInputStream(socket.getInputStream());
+    public RequestManager(Socket s) {
+        try {
+            this.socket=s;
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.in = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public void request() throws IOException, ClassNotFoundException, NoPlayListFoundException, NoElementFoundException {
+    public void request(){
 
         String envoi;
-        cmd = in.readObject();
-        while (!(cmd).equals("q")){
-            switch ((String) cmd) {
-                case "a" -> sendAlbum();
-                case "p" -> sendPlaylist();
-                case "s" -> sendSongs();
-                case "+a" -> createAlbum();
-                case "+p" -> createPlaylist();
-                case "+s" -> createSong();
-                case "l" -> {
-                    loadData(musicHub);
-                }
-                case "h" -> printAvailableCommands();
-                default -> {
-                    envoi = "This command doesn't exist \n Please retry !";
-                    out.writeObject(envoi);
-                }
-            }
+        try {
             cmd = in.readObject();
+            while (!(cmd).equals("q")){
+                switch ((String) cmd) {
+                    case "a" -> sendAlbum();
+                    case "p" -> sendPlaylist();
+                    case "s" -> sendSongs();
+                    case "+a" -> createAlbum();
+                    case "+p" -> createPlaylist();
+                    case "+s" -> createSong();
+                    case "play" -> playSong();
+                    case "l" -> {
+                        loadData(musicHub);
+                    }
+                    case "h" -> printAvailableCommands();
+                    default -> {
+                        envoi = "This command doesn't exist \n Please retry !";
+                        out.writeObject(envoi);
+                    }
+                }
+                cmd = in.readObject();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
     }
 
 
@@ -140,6 +151,16 @@ public class RequestManager {
             musicHubClient.elements.add(currentElement);
         }
         out.writeObject("Data has refresh");
+    }
+
+    public void playSong(){
+        try {
+            out.writeObject("Quel song voulez vous jouer ? ");
+            AudioPlayer p = new AudioPlayer((String) in.readObject());
+            p.run();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void printAvailableCommands() throws IOException {

@@ -18,7 +18,7 @@ public class Server {
           //System.out.println("client connecté");
            RequestManager requestManager1 = new RequestManager(socket);
            requestManager1.request();
-        } catch (IOException | ClassNotFoundException | NoPlayListFoundException | NoElementFoundException e) {e.printStackTrace();}
+        } catch (IOException e) {e.printStackTrace();}
     }
 
 
