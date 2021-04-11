@@ -1,6 +1,7 @@
 package musichub.server_client;
 
 
+import javax.sound.sampled.AudioInputStream;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;

@@ -157,7 +157,7 @@ public class RequestManager {
         try {
             out.writeObject("Quel song voulez vous jouer ? ");
             AudioPlayer p = new AudioPlayer((String) in.readObject());
-            p.run();
+            p.run(out);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

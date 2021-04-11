@@ -3,6 +3,7 @@ package musichub.business;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class AudioPlayer {
 
@@ -34,18 +35,19 @@ public class AudioPlayer {
 
 
 
-    public void run(){
+    public void run(ObjectOutputStream out){
         try {
             line.open(audioFormat);
             line.start();
             int nb;
             while ((nb = audioInput.read(tab,0,numBytes )) != -1 ) {
-                line.write(tab, 0, nb);
+                out.writeObject(line.write(tab, 0, nb));
             }
             line.close();
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
         }
+
 
     }
 
