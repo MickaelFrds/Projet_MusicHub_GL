@@ -230,7 +230,7 @@ public class RequestManager {
         if (theAlbum != null)
             result = musicHub.albums.remove(theAlbum);
             musicHubClient.albums.remove(theAlbum);
-        if (!result) throw new NoAlbumFoundException("Playlist " + ((String)cmd) + " not found!");
+        if (!result) throw new NoAlbumFoundException("Album " + ((String)cmd) + " not found!");
 
 
 
