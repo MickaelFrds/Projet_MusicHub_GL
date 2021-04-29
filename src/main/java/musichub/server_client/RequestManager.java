@@ -224,8 +224,10 @@ public class RequestManager {
     public void playSong(){
         try {
             out.writeObject("Quel song voulez vous jouer ? ");
-            AudioPlayer p = new AudioPlayer((String) in.readObject());
-            p.run(out);
+            Object titleSong = in.readObject();
+            String chemin = System.getProperty("user.dir") + "\\files\\" + titleSong + ".wav";
+            File file=new File(chemin);
+            out.writeObject(file);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
