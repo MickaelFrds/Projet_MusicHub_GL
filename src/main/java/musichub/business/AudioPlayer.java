@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 
-public abstract class AudioPlayer {
+public  class AudioPlayer {
 
     private AudioInputStream audioInput;
     private AudioFormat audioFormat;

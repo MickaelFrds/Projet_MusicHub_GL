@@ -44,7 +44,7 @@ public class Client {
             Object recu = in.readObject();
             System.out.println(recu);
             if (recu instanceof File){
-                AudioPlayer_ p = new AudioPlayer_(recu);
+                AudioPlayer p = new AudioPlayer(recu);
                 p.run();
             }
         }
