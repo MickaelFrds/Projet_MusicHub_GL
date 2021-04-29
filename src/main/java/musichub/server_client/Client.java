@@ -1,6 +1,8 @@
 package musichub.server_client;
 
 
+import musichub.business.AudioPlayer;
+
 import javax.sound.sampled.AudioInputStream;
 import java.io.*;
 import java.net.*;
@@ -41,6 +43,10 @@ public class Client {
             out.writeObject(cmd);
             Object recu = in.readObject();
             System.out.println(recu);
+            if (recu instanceof File){
+                AudioPlayer p = new AudioPlayer(recu);
+                p.run();
+            }
         }
     }
 }
