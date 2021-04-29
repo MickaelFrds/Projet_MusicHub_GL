@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Client {
 
     private Socket socket;
-    ObjectOutputStream out;
+    private ObjectOutputStream out;
     ObjectInputStream in;
 
 

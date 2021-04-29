@@ -50,7 +50,6 @@ public class MusicHub {
 		this.loadAlbums();
 		this.loadPlaylists();
 	}
-	
 	public void addElement(AudioElement element) {
 		elements.add(element);
 	}

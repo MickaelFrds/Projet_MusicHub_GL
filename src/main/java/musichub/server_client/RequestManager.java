@@ -1,5 +1,6 @@
 package musichub.server_client;
 
+import musichub.Exception.NoAlbumFoundException;
 import musichub.Exception.NoElementFoundException;
 import musichub.Exception.NoPlayListFoundException;
 import musichub.business.*;
@@ -9,12 +10,14 @@ import musichub.business.MusicHub.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import musichub.util.XMLHandler;
+import org.w3c.dom.NodeList;
+
 public class RequestManager {
 
     private Socket socket;
@@ -22,6 +25,15 @@ public class RequestManager {
     private ObjectOutputStream out;
     MusicHub musicHub = new MusicHub();
     MusicHub musicHubClient = new MusicHub();
+
+    public static final String DIR = System.getProperty("user.dir");
+    public static final String ALBUMS_FILE_PATH = DIR + "\\files\\albums.xml";
+    public static final String PLAYLISTS_FILE_PATH = DIR + "\\files\\playlists.xml";
+    public static final String ELEMENTS_FILE_PATH = DIR + "\\files\\elements.xml";
+
+    public  List<Album> albums2= new LinkedList<Album>(musicHub.albums);
+    public  List<PlayList> playlists2= new LinkedList<PlayList>(musicHub.playlists);
+    public  List<AudioElement> elements2= new LinkedList<AudioElement>(musicHub.elements);
     Object cmd;
 
 
@@ -49,10 +61,14 @@ public class RequestManager {
                     case "+a" -> createAlbum();
                     case "+p" -> createPlaylist();
                     case "+s" -> createSong();
+                    case "-a" -> remove_albums();
+                    case "-p" -> remove_playlists();
+                    case "-s" -> remove_elements();
                     case "play" -> playSong();
                     case "l" -> {
                         loadData(musicHub);
                     }
+                    case "c" -> cancelchanges();
                     case "h" -> printAvailableCommands();
                     default -> {
                         envoi = "This command doesn't exist \n Please retry !";
@@ -61,7 +77,7 @@ public class RequestManager {
                 }
                 cmd = in.readObject();
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | NoPlayListFoundException | NoAlbumFoundException | NoElementFoundException e) {
             e.printStackTrace();
         }
 
@@ -103,7 +119,7 @@ public class RequestManager {
         out.writeObject("Genre : (jazz,classic,hiphop,rock,pop,rap)");
         Object sGenre = in.readObject();
         Song s =new Song( (String) sTitle, (String) sArtist, Integer.parseInt((String) sLength) , (String) sContent, (String) sGenre);
-        out.writeObject("Song :" + s.getTitle()+ "has created !\nDo you want to update song list?\n");
+        out.writeObject("Song :" + s.getTitle()+ "has been created !\n");
         musicHub.addElement(s);
         musicHub.saveElements();
     }
@@ -118,7 +134,7 @@ public class RequestManager {
         out.writeObject("Date : (format : YYYY-DD-MM)");
         Object aDate = in.readObject();
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
-        out.writeObject("Album : "+a.getTitle()+" has created !\nDo you want to update album list?\n yes (y)   no (n)");
+        out.writeObject("Album : "+a.getTitle()+" has been created !\n");
         musicHub.addAlbum(a);
         musicHub.saveAlbums();
 
@@ -150,7 +166,7 @@ public class RequestManager {
             AudioElement currentElement = audioElementIter.next();
             musicHubClient.elements.add(currentElement);
         }
-        out.writeObject("Data has refresh");
+        out.writeObject("Data has been refreshed");
     }
 
     public void playSong(){
@@ -163,6 +179,100 @@ public class RequestManager {
         }
     }
 
+    public void cancelchanges() throws IOException{
+        musicHubClient.playlists.clear();
+        musicHubClient.playlists.addAll(playlists2);
+        musicHubClient.elements.clear();
+        musicHubClient.elements.addAll(elements2);
+        musicHubClient.albums.clear();
+        musicHubClient.albums.addAll(albums2);
+
+        musicHub.albums.clear();
+        musicHub.albums.addAll(albums2);
+        musicHub.playlists.clear();
+        musicHub.playlists.addAll(playlists2);
+        musicHub.elements.clear();
+        musicHub.elements.addAll(elements2);
+
+        musicHub.saveElements();
+        musicHub.savePlayLists();
+        musicHub.saveAlbums();
+
+        out.writeObject("changes has been canceled");
+    }
+
+    public void remove_playlists() throws IOException, ClassNotFoundException, NoPlayListFoundException {
+
+        out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
+        cmd=(String)in.readObject();
+
+        musicHub.deletePlayList((String) cmd);
+        out.writeObject("the playlist has been removed");
+
+        musicHub.savePlayLists();
+    }
+
+    public void remove_albums() throws IOException, ClassNotFoundException,NoAlbumFoundException {
+
+        out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
+        cmd=(String)in.readObject();
+
+
+
+
+        Album theAlbum = null;
+        boolean result = false;
+        for (Album al : musicHub.albums) {
+            if (al.getTitle().toLowerCase().equals(((String)cmd).toLowerCase())) {
+                theAlbum = al;
+                break;
+            }
+        }
+
+        if (theAlbum != null)
+            result = musicHub.albums.remove(theAlbum);
+            musicHubClient.albums.remove(theAlbum);
+        if (!result) throw new NoAlbumFoundException("Playlist " + ((String)cmd) + " not found!");
+
+
+
+
+        out.writeObject("the album has been removed");
+
+        musicHub.saveAlbums();
+    }
+
+    public void remove_elements() throws IOException, ClassNotFoundException, NoElementFoundException {
+
+        out.writeObject("tapez le nom du son que vous souhaitez supprimer");
+        cmd=(String)in.readObject();
+
+
+
+
+        AudioElement theElement= null;
+        boolean result = false;
+        for (AudioElement el : musicHub.elements) {
+            if (el.getTitle().toLowerCase().equals(((String)cmd).toLowerCase())) {
+                theElement = el;
+                break;
+            }
+        }
+
+        if (theElement != null)
+            result = musicHub.elements.remove(theElement);
+        musicHubClient.elements.remove(theElement);
+        if (!result) throw new NoElementFoundException("song " + ((String)cmd) + " not found!");
+
+
+
+
+        out.writeObject("the song has been removed");
+
+        musicHub.saveElements();
+    }
+
+
     private void printAvailableCommands() throws IOException {
         StringBuffer menu =new StringBuffer();
         menu.append("a: display the album titles \n");
@@ -171,7 +281,11 @@ public class RequestManager {
         menu.append("+a: add a new album\n");
         menu.append("+p: add a new playlist\n");
         menu.append("+s: add a new song\n");
+        menu.append("-a: remove an existing album\n");
+        menu.append("-p: remove an existing playlist\n");
+        menu.append("-s: remove an existing song\n");
         menu.append("l: refresh database\n");
+        menu.append("c: cancel changes\n");
         menu.append("h: menu \n");
         menu.append(" \n");
         out.writeObject(menu);

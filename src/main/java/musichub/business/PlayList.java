@@ -9,20 +9,16 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
-public class PlayList {
-	private String title;
-	private UUID uuid;
+public class PlayList extends Groupsong {
 	private ArrayList<UUID> elementUUIDs;
 
 	public PlayList (String title, String id, ArrayList<UUID> elementUUIDs) {
-		this.title = title;
-		this.uuid = UUID.fromString(id);
+		super(title, id);
 		this.elementUUIDs = elementUUIDs;
 	}
 	
 	public PlayList (String title) {
-		this.title = title;
-		this.uuid = UUID.randomUUID();
+		super(title);
 		this.elementUUIDs = new ArrayList<UUID>();
 	}
 	
@@ -40,19 +36,8 @@ public class PlayList {
 	}
 	
 	public PlayList (Element xmlElement) throws Exception {
+		super(xmlElement);
 		try {
-			this.title = xmlElement.getElementsByTagName("title").item(0).getTextContent();
-
-			String uuid = null;
-			try {
-				uuid = xmlElement.getElementsByTagName("UUID").item(0).getTextContent();
-			}
-			catch (Exception ex) {
-				System.out.println ("Empty playlist UUID, will create a new one");
-			}
-			if ((uuid == null)  || (uuid.isEmpty()))
-				this.uuid = UUID.randomUUID();
-			else this.uuid = UUID.fromString(uuid);
 			
 			//parse list of elements:
 			Node elementsElement = xmlElement.getElementsByTagName("elements").item(0);

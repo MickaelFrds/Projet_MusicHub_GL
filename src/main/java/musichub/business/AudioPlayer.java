@@ -3,10 +3,11 @@ package musichub.business;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class AudioPlayer {
-
+    private ObjectInputStream in;
     private File file;
     private AudioInputStream audioInput;
     private AudioFormat audioFormat;
@@ -15,7 +16,7 @@ public class AudioPlayer {
     private byte[] tab;
     private DataLine.Info info;
     public SourceDataLine line;
-
+    Object cmd;
     public AudioPlayer(String titleSong){
         try {
             String chemin = System.getProperty("user.dir") + "\\files\\" + titleSong + ".wav";
@@ -40,9 +41,10 @@ public class AudioPlayer {
             line.open(audioFormat);
             line.start();
             int nb;
-            while ((nb = audioInput.read(tab,0,numBytes )) != -1 ) {
+            while((nb = audioInput.read(tab,0,numBytes ))!= -1) {
                 out.writeObject(line.write(tab, 0, nb));
             }
+
             line.close();
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();

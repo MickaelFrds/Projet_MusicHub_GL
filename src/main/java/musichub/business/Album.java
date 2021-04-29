@@ -10,19 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class Album {
-	private String title;
+public class Album extends Groupsong {
 	private String artist;
 	private int lengthInSeconds;
-	private UUID uuid;
 	private Date date;
 	private ArrayList<UUID> songsUIDs;
 
 	public Album (String title, String artist, int lengthInSeconds, String id, String date, ArrayList<UUID> songsUIDs) {
-		this.title = title;
+		super(title,id);
 		this.artist = artist;
 		this.lengthInSeconds = lengthInSeconds;
-		this.uuid = UUID.fromString(id);
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			this.date = sdf.parse(date);
@@ -33,10 +30,9 @@ public class Album {
 	}
 	
 	public Album (String title, String artist, int lengthInSeconds, String date) {
-		this.title = title;
+		super(title);
 		this.artist = artist;
 		this.lengthInSeconds = lengthInSeconds;
-		this.uuid = UUID.randomUUID();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			this.date = sdf.parse(date);
@@ -47,19 +43,13 @@ public class Album {
 	}
 	
 	public Album (Element xmlElement) throws Exception {
+		super(xmlElement);
+
 		try {
-			this.title = xmlElement.getElementsByTagName("title").item(0).getTextContent();
+
 			this.lengthInSeconds = Integer.parseInt(xmlElement.getElementsByTagName("lengthInSeconds").item(0).getTextContent());
 			String uuid = null;
-			try {
-				uuid = xmlElement.getElementsByTagName("UUID").item(0).getTextContent();
-			}
-			catch (Exception ex) {
-				System.out.println ("Empty album UUID, will create a new one");
-			}
-			if ((uuid == null)  || (uuid.isEmpty()))
-				this.uuid = UUID.randomUUID();
-			else this.uuid = UUID.fromString(uuid);
+
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			this.date = sdf.parse(xmlElement.getElementsByTagName("date").item(0).getTextContent()); 
