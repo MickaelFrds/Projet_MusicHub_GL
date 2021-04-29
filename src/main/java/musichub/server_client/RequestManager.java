@@ -65,9 +65,7 @@ public class RequestManager {
                     case "-p" -> remove_playlists();
                     case "-s" -> remove_elements();
                     case "play" -> playSong();
-                    case "l" -> {
-                        loadData(musicHub);
-                    }
+                    case "l" -> loadData();
                     case "c" -> cancelchanges();
                     case "h" -> printAvailableCommands();
                     default -> {
@@ -150,23 +148,23 @@ public class RequestManager {
     }
 
 
-    public void loadData(MusicHub musichub) throws IOException {
+    public void loadData() throws IOException {
         musicHubClient.playlists.clear();
-        for (Iterator<PlayList> playlistsIter = musichub.playlists(); playlistsIter.hasNext();) {
+        for (Iterator<PlayList> playlistsIter = musicHub.playlists(); playlistsIter.hasNext();) {
             PlayList currentPlayList = playlistsIter.next();
             musicHubClient.playlists.add(currentPlayList);
         }
         musicHubClient.albums.clear();
-        for (Iterator<Album> albumsIter = musichub.albums(); albumsIter.hasNext();) {
+        for (Iterator<Album> albumsIter = musicHub.albums(); albumsIter.hasNext();) {
             Album currentAlbum = albumsIter.next();
             musicHubClient.albums.add(currentAlbum);
         }
         musicHubClient.elements.clear();
-        for (Iterator<AudioElement> audioElementIter = musichub.elements(); audioElementIter.hasNext();) {
+        for (Iterator<AudioElement> audioElementIter = musicHub.elements(); audioElementIter.hasNext();) {
             AudioElement currentElement = audioElementIter.next();
             musicHubClient.elements.add(currentElement);
         }
-        out.writeObject("Data has been refreshed");
+        out.writeObject("Data has refresh");
     }
 
     public void playSong(){
