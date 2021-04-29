@@ -124,13 +124,30 @@ public class RequestManager {
 
     public void createAlbum() throws IOException, ClassNotFoundException {
         out.writeObject("Title :");
-        Object aTitle = in.readObject();
+        Object aTitle,aArtist,aLength,aDate;
+        do{
+            aTitle = in.readObject();
+            if(aTitle==""){out.writeObject("The title should not be empty");}
+        }while (aTitle=="");
         out.writeObject("Artiste :");
-        Object aArtist = in.readObject();
+        do{
+            aArtist = in.readObject();
+            if(aArtist==""){out.writeObject("The artist should not be empty");}
+        }while (aArtist=="");
         out.writeObject("Lenght :");
-        Object aLength = in.readObject();
+        Integer number;
+        do{
+            aLength = in.readObject();
+            try{
+            number=(Integer.parseInt((String)aLength));
+            }catch (NumberFormatException e){ System.err.println("un nombre entier est attendu");}
+            if(aLength=="" || (Integer.parseInt((String)aLength)<1)){out.writeObject("The Length format is not valid");}
+        }while (aLength=="" || (Integer.parseInt((String)aLength)<1));
         out.writeObject("Date : (format : YYYY-DD-MM)");
-        Object aDate = in.readObject();
+        do{
+            aDate = in.readObject();
+            if(aDate==""){out.writeObject("The date should not be empty");}
+        }while (aDate=="");
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
         out.writeObject("Album : "+a.getTitle()+" has been created !\n");
         musicHub.addAlbum(a);
@@ -140,7 +157,11 @@ public class RequestManager {
 
     public void createPlaylist() throws IOException, ClassNotFoundException {
         out.writeObject("Type the name of the playlist you wish to create:");
-        Object titlePlaylist = in.readObject();
+        Object titlePlaylist;
+        do{
+            titlePlaylist = in.readObject();
+            if(titlePlaylist==""){out.writeObject("The name should not be empty");}
+            }while (titlePlaylist=="");
         PlayList pl = new PlayList((String) titlePlaylist);
         out.writeObject("Playlist " + pl.getTitle() + " is created\n");
         musicHub.addPlaylist(pl);
@@ -202,10 +223,17 @@ public class RequestManager {
     public void remove_playlists() throws IOException, ClassNotFoundException, NoPlayListFoundException {
 
         out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
-        cmd=(String)in.readObject();
 
-        musicHub.deletePlayList((String) cmd);
-        out.writeObject("the playlist has been removed");
+        int test;
+        do {
+            cmd=(String)in.readObject();
+            test=musicHub.getTitlePlaylist().indexOf((String) cmd);
+            if ( test!= -1) {
+                musicHub.deletePlayList((String) cmd);
+                out.writeObject("the playlist has been removed");
+            }
+            else{out.writeObject("the playlist you are trying to remove doesn't exist");}
+        }while(test== -1);
 
         musicHub.savePlayLists();
     }
@@ -213,40 +241,46 @@ public class RequestManager {
     public void remove_albums() throws IOException, ClassNotFoundException,NoAlbumFoundException {
 
         out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
-        cmd=(String)in.readObject();
 
 
+        int test;
+        do {
+            cmd=(String)in.readObject();
+            test=musicHub.getTitleAlbum().indexOf((String) cmd);
+            if ( test!= -1) {
+
+                Album theAlbum = null;
+                boolean result = false;
+                for (Album al : musicHub.albums) {
+                    if (al.getTitle().toLowerCase().equals(((String) cmd).toLowerCase())) {
+                        theAlbum = al;
+                        break;
+                    }
+                }
+
+                if (theAlbum != null)
+                    result = musicHub.albums.remove(theAlbum);
+                musicHubClient.albums.remove(theAlbum);
+                if (!result) throw new NoAlbumFoundException("Album " + ((String) cmd) + " not found!");
 
 
-        Album theAlbum = null;
-        boolean result = false;
-        for (Album al : musicHub.albums) {
-            if (al.getTitle().toLowerCase().equals(((String)cmd).toLowerCase())) {
-                theAlbum = al;
-                break;
+                out.writeObject("the album has been removed");
             }
-        }
-
-        if (theAlbum != null)
-            result = musicHub.albums.remove(theAlbum);
-            musicHubClient.albums.remove(theAlbum);
-        if (!result) throw new NoAlbumFoundException("Playlist " + ((String)cmd) + " not found!");
-
-
-
-
-        out.writeObject("the album has been removed");
-
+            else{out.writeObject("the album you are trying to remove doesn't exist");}
+        }while(test== -1);
         musicHub.saveAlbums();
     }
 
     public void remove_elements() throws IOException, ClassNotFoundException, NoElementFoundException {
 
         out.writeObject("tapez le nom du son que vous souhaitez supprimer");
-        cmd=(String)in.readObject();
 
 
-
+        int test;
+        do {
+            cmd=(String)in.readObject();
+            test=musicHub.getTitleSongs().indexOf((String) cmd);
+            if ( test!= -1) {
 
         AudioElement theElement= null;
         boolean result = false;
@@ -266,7 +300,9 @@ public class RequestManager {
 
 
         out.writeObject("the song has been removed");
-
+            }
+            else{out.writeObject("the song you are trying to remove doesn't exist");}
+        }while(test== -1);
         musicHub.saveElements();
     }
 
