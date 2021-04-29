@@ -6,6 +6,7 @@ import musichub.business.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import musichub.business.MusicHub.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,8 +14,8 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import musichub.util.XMLHandler;
+
 public class RequestManager {
 
     private Socket socket;
@@ -33,11 +34,9 @@ public class RequestManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void request(){
-
         String envoi;
         try {
             cmd = in.readObject();
@@ -50,9 +49,7 @@ public class RequestManager {
                     case "+p" -> createPlaylist();
                     case "+s" -> createSong();
                     case "play" -> playSong();
-                    case "l" -> {
-                        loadData(musicHub);
-                    }
+                    case "l" -> loadData();
                     case "h" -> printAvailableCommands();
                     default -> {
                         envoi = "This command doesn't exist \n Please retry !";
@@ -66,9 +63,6 @@ public class RequestManager {
         }
 
     }
-
-
-
 
     public void sendAlbum() throws IOException {
         StringBuffer text =new StringBuffer();
@@ -134,19 +128,19 @@ public class RequestManager {
     }
 
 
-    public void loadData(MusicHub musichub) throws IOException {
+    public void loadData() throws IOException {
         musicHubClient.playlists.clear();
-        for (Iterator<PlayList> playlistsIter = musichub.playlists(); playlistsIter.hasNext();) {
+        for (Iterator<PlayList> playlistsIter = musicHub.playlists(); playlistsIter.hasNext();) {
             PlayList currentPlayList = playlistsIter.next();
             musicHubClient.playlists.add(currentPlayList);
         }
         musicHubClient.albums.clear();
-        for (Iterator<Album> albumsIter = musichub.albums(); albumsIter.hasNext();) {
+        for (Iterator<Album> albumsIter = musicHub.albums(); albumsIter.hasNext();) {
             Album currentAlbum = albumsIter.next();
             musicHubClient.albums.add(currentAlbum);
         }
         musicHubClient.elements.clear();
-        for (Iterator<AudioElement> audioElementIter = musichub.elements(); audioElementIter.hasNext();) {
+        for (Iterator<AudioElement> audioElementIter = musicHub.elements(); audioElementIter.hasNext();) {
             AudioElement currentElement = audioElementIter.next();
             musicHubClient.elements.add(currentElement);
         }
@@ -156,8 +150,10 @@ public class RequestManager {
     public void playSong(){
         try {
             out.writeObject("Quel song voulez vous jouer ? ");
-            AudioPlayer p = new AudioPlayer((String) in.readObject());
-            p.run(out);
+            Object titleSong = in.readObject();
+            String chemin = System.getProperty("user.dir") + "\\files\\" + titleSong + ".wav";
+            File file=new File(chemin);
+            out.writeObject(file);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -172,6 +168,7 @@ public class RequestManager {
         menu.append("+p: add a new playlist\n");
         menu.append("+s: add a new song\n");
         menu.append("l: refresh database\n");
+        menu.append(("play: play song\n"));
         menu.append("h: menu \n");
         menu.append(" \n");
         out.writeObject(menu);

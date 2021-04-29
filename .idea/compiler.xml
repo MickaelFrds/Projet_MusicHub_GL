@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Projet_MusicHub_GL" />
+        <module name="Projet_MusicHub" />
       </profile>
     </annotationProcessing>
   </component>
