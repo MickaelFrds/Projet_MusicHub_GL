@@ -7,6 +7,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class AudioPlayer {
+    /**
+     * This class handles the reading of audio files
+     */
     private ObjectInputStream in;
     private File file;
     private AudioInputStream audioInput;

@@ -5,6 +5,9 @@ import org.w3c.dom.Element;
 
 
 public class Song extends AudioElement {
+	/**
+	 * This class handles the Song type
+	 */
 	private Genre genre;
 	
 	public Song (String title, String artist, int length, String uid, String content, String genre) {

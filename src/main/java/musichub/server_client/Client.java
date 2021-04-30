@@ -7,7 +7,9 @@ import java.net.*;
 import java.util.Scanner;
 
 public class Client {
-
+    /**
+     * This class handles the client sockets
+     */
     private Socket socket;
     private ObjectOutputStream out;
     ObjectInputStream in;

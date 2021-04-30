@@ -5,6 +5,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.UUID;
 public abstract class Groupsong {
+    /**
+     * This class is an abstraction for playlists and albums
+     */
     protected String title;
     protected UUID uuid;
 

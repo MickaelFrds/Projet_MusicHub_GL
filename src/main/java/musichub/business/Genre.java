@@ -1,6 +1,9 @@
 package musichub.business;
 
 public enum Genre {
+	/**
+	 * This enumeration contains all the types a music can have
+	 */
 	JAZZ ("jazz"), CLASSIC ("classic"), HIPHOP ("hiphop"), ROCK ("rock"), POP("pop"), RAP("rap");
 	private String genre;
 	private Genre (String genre) {

@@ -11,6 +11,9 @@ import java.util.*;
 
 
 public class Album extends Groupsong {
+	/**
+	 * This class handles the Album type
+	 */
 	private String artist;
 	private int lengthInSeconds;
 	private Date date;

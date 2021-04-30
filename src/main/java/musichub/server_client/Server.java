@@ -7,7 +7,10 @@ import java.io.*;
 import java.net.*;
 
 public class Server {
-
+    /**
+     * This class handles the server sockets
+     * @param ip
+     */
 
 
     public void run (String ip) {

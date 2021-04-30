@@ -18,6 +18,9 @@ import java.io.IOException;
 
 
 public class XMLHandler {
+	/**
+	 * This class handles the actions related to XML files used to save changes
+	 */
 	TransformerFactory transformerFactory;
 	Transformer transformer;
 	DocumentBuilderFactory documentFactory;

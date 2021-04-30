@@ -31,6 +31,9 @@ class SortByAuthor implements Comparator<AudioElement>
 }
 
 public class MusicHub {
+	/**
+	 * This class handles the musichub instances and all its methods
+ 	 */
 	public  List<Album> albums;
 	public  List<PlayList> playlists;
 	public  List<AudioElement> elements;

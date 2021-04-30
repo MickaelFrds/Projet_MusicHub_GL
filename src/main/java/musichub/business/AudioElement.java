@@ -6,6 +6,9 @@ import org.w3c.dom.Element;
 import java.util.UUID;
 
 public abstract class AudioElement {
+	/**
+	 * This class is an abstraction for the song type
+	 */
 	protected String  	title;
 	protected String 	artist;
 	protected int    	lengthInSeconds;

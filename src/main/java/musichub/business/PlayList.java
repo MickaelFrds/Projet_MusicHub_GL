@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public class PlayList extends Groupsong {
+	/**
+	 * This class handles the PlayList type
+	 */
 	private ArrayList<UUID> elementUUIDs;
 
 	public PlayList (String title, String id, ArrayList<UUID> elementUUIDs) {
