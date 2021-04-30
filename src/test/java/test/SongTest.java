@@ -1,10 +1,10 @@
 package test;
+
+import static org.junit.jupiter.api.Assertions.*;
 import musichub.Exception.NoElementFoundException;
 import musichub.business.AudioElement;
 import musichub.business.MusicHub;
 import musichub.business.Song;
-
-import javax.lang.model.element.Element;
 
 public class SongTest {
 

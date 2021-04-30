@@ -1,10 +1,12 @@
 package test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import musichub.Exception.NoPlayListFoundException;
 import musichub.business.MusicHub;
 import musichub.business.PlayList;
 
-public class PlaylistTest {
+class PlayListTest {
 
 
     public static void main(String[] args) throws NoPlayListFoundException {

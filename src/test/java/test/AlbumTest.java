@@ -1,11 +1,12 @@
 package test;
+
 import musichub.Exception.NoAlbumFoundException;
 import musichub.business.Album;
 import musichub.business.MusicHub;
 
-public class AlbumTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-
+class AlbumTest {
     public static void main(String[] args) throws NoAlbumFoundException {
 
 
