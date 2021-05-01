@@ -175,10 +175,12 @@ public class RequestManager {
             if(aLength=="" || (Integer.parseInt((String)aLength)<1)){out.writeObject("The Length format is not valid");}
         }while (aLength=="" || (Integer.parseInt((String)aLength)<1));
         out.writeObject("Date : (format : YYYY-DD-MM)");
+        String date;
         do{
             aDate = in.readObject();
-            if(aDate==""){out.writeObject("The date should not be empty");}
-        }while (aDate=="");
+            date=(String)aDate;
+            if(date.length()<10 || date.length()>10 || date.charAt(4)!='-' || date.charAt(7)!='-'){out.writeObject("The date should not be empty");}
+        }while (date.length()<10 || date.charAt(4)!='-' || date.charAt(7)!='-');
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
         out.writeObject("Album : "+a.getTitle()+" has been created !\n");
         musicHub.addAlbum(a);
