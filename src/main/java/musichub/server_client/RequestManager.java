@@ -171,7 +171,7 @@ public class RequestManager {
             aLength = in.readObject();
             try{
             number=(Integer.parseInt((String)aLength));
-            }catch (NumberFormatException e){ System.err.println("un nombre entier est attendu");}
+            }catch (NumberFormatException e){ out.writeObject("un nombre entier est attendu");}
             if(aLength=="" || (Integer.parseInt((String)aLength)<1)){out.writeObject("The Length format is not valid");}
         }while (aLength=="" || (Integer.parseInt((String)aLength)<1));
         out.writeObject("Date : (format : YYYY-DD-MM)");
@@ -179,7 +179,7 @@ public class RequestManager {
         do{
             aDate = in.readObject();
             date=(String)aDate;
-            if(date.length()<10 || date.length()>10 || date.charAt(4)!='-' || date.charAt(7)!='-'){out.writeObject("The date should not be empty");}
+            if(date.length()<10 || date.length()>10 || date.charAt(4)!='-' || date.charAt(7)!='-'){out.writeObject("The date format is not valid, try again");}
         }while (date.length()<10 || date.charAt(4)!='-' || date.charAt(7)!='-');
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
         out.writeObject("Album : "+a.getTitle()+" has been created !\n");
