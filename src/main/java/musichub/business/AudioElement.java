@@ -28,8 +28,7 @@ public abstract class AudioElement {
 		this.uuid =  UUID.randomUUID();
 	}
 	
-	public AudioElement (Element xmlElement)  throws Exception
-	{
+	public AudioElement (Element xmlElement) {
 		try {
 			title = xmlElement.getElementsByTagName("title").item(0).getTextContent();
 			artist = xmlElement.getElementsByTagName("artist").item(0).getTextContent();

@@ -2,8 +2,6 @@ package musichub.server_client;
 
 
 import musichub.business.AudioPlayer;
-
-import javax.sound.sampled.AudioInputStream;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -13,6 +11,7 @@ public class Client {
     private Socket socket;
     private ObjectOutputStream out;
     ObjectInputStream in;
+    AudioPlayer p;
 
 
     public void connect(String ip,int port) {
@@ -37,17 +36,24 @@ public class Client {
     public void requestClient() throws IOException, ClassNotFoundException {
         Scanner scan = new Scanner(System.in);
         System.out.println("Type 'h' to display the menu : ");
-        Object cmd="a";
+        String cmd="a";
         while (!cmd.equals("q")) {
             cmd = scan.nextLine();
             out.writeObject(cmd);
             Object recu = in.readObject();
             System.out.println(recu);
-            if (recu instanceof File){
-                AudioPlayer p = new AudioPlayer(recu);
-                p.run();
+            if (recu instanceof File) {
+                p = new AudioPlayer((File) recu);
+                Thread thread = new Thread(p);
+                thread.start();
+        }
+            if (cmd.equals("Client")) {
+                p.stop();
             }
         }
+
+
     }
 }
+
 

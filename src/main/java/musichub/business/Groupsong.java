@@ -1,10 +1,9 @@
 package musichub.business;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import java.util.UUID;
+
 public abstract class Groupsong {
+
     protected String title;
     protected UUID uuid;
 
@@ -12,11 +11,13 @@ public abstract class Groupsong {
         this.title=title;
         this.uuid=UUID.fromString(id);
     }
+
     public Groupsong(String title){
         this.title=title;
         this.uuid=UUID.randomUUID();
     }
-    public Groupsong(Element xmlElement) throws Exception{
+
+    public Groupsong(Element xmlElement) {
         try {
             this.title = xmlElement.getElementsByTagName("title").item(0).getTextContent();
 

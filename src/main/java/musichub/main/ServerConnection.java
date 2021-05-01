@@ -6,8 +6,6 @@ public class ServerConnection {
 
     public static void main(String[] args)  {
         Server server1 = new Server();
-        while (true) {
-            server1.run("localhost");
-        }
+        server1.run();
     }
 }
