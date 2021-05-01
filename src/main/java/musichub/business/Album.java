@@ -9,28 +9,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * This class handles the Album type
- */
 public class Album extends Groupsong {
 
 	private String artist;
-	private int lengthInSeconds;
+	private final int lengthInSeconds;
 	private Date date;
 	private ArrayList<UUID> songsUIDs;
-
-	public Album (String title, String artist, int lengthInSeconds, String id, String date, ArrayList<UUID> songsUIDs) {
-		super(title,id);
-		this.artist = artist;
-		this.lengthInSeconds = lengthInSeconds;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			this.date = sdf.parse(date);
-		} catch (ParseException ex) {
-			ex.printStackTrace();
-		}
-		this.songsUIDs = songsUIDs;
-	}
 	
 	public Album (String title, String artist, int lengthInSeconds, String date) {
 		super(title);
@@ -42,7 +26,7 @@ public class Album extends Groupsong {
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		}
-		this.songsUIDs = new ArrayList<UUID>();
+		this.songsUIDs = new ArrayList<>();
 	}
 	
 	public Album (Element xmlElement) throws Exception {
@@ -51,9 +35,7 @@ public class Album extends Groupsong {
 		try {
 
 			this.lengthInSeconds = Integer.parseInt(xmlElement.getElementsByTagName("lengthInSeconds").item(0).getTextContent());
-			String uuid = null;
 
-			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			this.date = sdf.parse(xmlElement.getElementsByTagName("date").item(0).getTextContent()); 
 			//parse list of songs:
@@ -61,7 +43,7 @@ public class Album extends Groupsong {
 			NodeList songUUIDNodes = songsElement.getChildNodes();
 			if (songUUIDNodes == null) return;
 		
-			this.songsUIDs = new ArrayList<UUID>();
+			this.songsUIDs = new ArrayList<>();
 			
 			for (int i = 0; i < songUUIDNodes.getLength(); i++) {
 				if (songUUIDNodes.item(i).getNodeType() == Node.ELEMENT_NODE)   {
@@ -85,7 +67,6 @@ public class Album extends Groupsong {
 	{
 		songsUIDs.add(song);
 	}
-	
 	
 	public List<UUID> getSongs() {
 		return songsUIDs;

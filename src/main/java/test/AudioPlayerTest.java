@@ -12,6 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class AudioPlayerTest {
         @org.junit.jupiter.api.Test
         void run() {
-            AudioPlayer p1= new AudioPlayer("zouker");
+           // AudioPlayer p1= new AudioPlayer("zouker");
         }
     }

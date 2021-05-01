@@ -1,51 +1,39 @@
 package musichub.server_client;
 
+import musichub.Exception.ConnectionFailedException;
 import musichub.Exception.NoAlbumFoundException;
 import musichub.Exception.NoElementFoundException;
 import musichub.Exception.NoPlayListFoundException;
 import musichub.business.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import musichub.business.MusicHub.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.*;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import musichub.util.XMLHandler;
-import org.w3c.dom.NodeList;
-/**
- * This class regroups all requests the Client can send to the server
- */
+
+
 public class RequestManager {
 
-    private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
+    private final ObjectInputStream in;
+    private final ObjectOutputStream out;
     MusicHub musicHub = new MusicHub();
     MusicHub musicHubClient = new MusicHub();
 
-    public static final String DIR = System.getProperty("user.dir");
-    public static final String ALBUMS_FILE_PATH = DIR + "\\files\\albums.xml";
-    public static final String PLAYLISTS_FILE_PATH = DIR + "\\files\\playlists.xml";
-    public static final String ELEMENTS_FILE_PATH = DIR + "\\files\\elements.xml";
-
-    public  List<Album> albums2= new LinkedList<Album>(musicHub.albums);
-    public  List<PlayList> playlists2= new LinkedList<PlayList>(musicHub.playlists);
-    public  List<AudioElement> elements2= new LinkedList<AudioElement>(musicHub.elements);
+    public  List<Album> albums2= new LinkedList<>(musicHub.albums);
+    public  List<PlayList> playlists2= new LinkedList<>(musicHub.playlists);
+    public  List<AudioElement> elements2= new LinkedList<>(musicHub.elements);
     Object cmd;
 
 
-    public RequestManager(Socket s) {
+    public RequestManager(Socket socket) throws ConnectionFailedException {
         try {
-            this.socket=s;
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ConnectionFailedException("Connexion failed.");
         }
 
     }
@@ -71,7 +59,7 @@ public class RequestManager {
                     case "c" -> cancelchanges();
                     case "h" -> printAvailableCommands();
                     default -> {
-                        envoi = "This command doesn't exist \n Please retry !";
+                        envoi = "";
                         out.writeObject(envoi);
                     }
                 }
@@ -84,22 +72,16 @@ public class RequestManager {
     }
 
 
-
-
     public void sendAlbum() throws IOException {
-        StringBuffer text =new StringBuffer();
+        StringBuilder text =new StringBuilder();
         String TitleAlbums = musicHubClient.getTitleAlbum();
-        text.append("Liste des albums :\n" + TitleAlbums );
+        text.append("Liste des albums :\n").append(TitleAlbums);
         out.writeObject(text.toString());
     }
 
-    public  void sendPlaylist(){
-       try {
+    public  void sendPlaylist() throws IOException {
            String envoi = musicHubClient.getTitlePlaylist();
            out.writeObject(envoi);
-       } catch (IOException e) {
-            System.out.println(e.toString());
-       }
     }
 
     public void sendSongs( ) throws IOException {
@@ -108,45 +90,16 @@ public class RequestManager {
     }
 
     public void createSong() throws IOException, ClassNotFoundException {
-        Object sTitle,sArtist,sLength,sContent, sGenre;
         out.writeObject("Title :");
-        do{
-            sTitle = in.readObject();
-            if(sTitle==""){out.writeObject("The title should not be empty");}
-        }while (sTitle=="");
+        Object sTitle = in.readObject();
         out.writeObject("Artiste :");
-        do{
-            sArtist = in.readObject();
-            if(sArtist==""){out.writeObject("The artist should not be empty");}
-        }while (sArtist=="");
+        Object sArtist = in.readObject();
         out.writeObject("Length :");
-        Integer number;
-        do{
-            sLength = in.readObject();
-            try{
-                number=(Integer.parseInt((String)sLength));
-            }catch (NumberFormatException e){ System.err.println("un nombre entier est attendu");}
-            if(sLength=="" || (Integer.parseInt((String)sLength)<1)){out.writeObject("The Length format is not valid");}
-        }while (sLength=="" || (Integer.parseInt((String)sLength)<1));
+        Object sLength = in.readObject();
         out.writeObject("Content :");
-        do{
-            sContent = in.readObject();
-            if(sContent==""){out.writeObject("The content should not be empty");}
-        }while (sContent=="");
+        Object sContent = in.readObject();
         out.writeObject("Genre : (jazz,classic,hiphop,rock,pop,rap)");
-        String type;
-        List<String> type2 = new LinkedList<>();
-        type2.add("jazz");
-        type2.add("classic");
-        type2.add("pop");
-        type2.add("hiphop");
-        type2.add("rock");
-        type2.add("rap");
-        do{
-            sGenre = in.readObject();
-            type=(String) sGenre;
-            if(!type2.contains(type)){out.writeObject("The genre doesn't match, try again");}
-        }while (!type2.contains(type));
+        Object sGenre = in.readObject();
         Song s =new Song( (String) sTitle, (String) sArtist, Integer.parseInt((String) sLength) , (String) sContent, (String) sGenre);
         out.writeObject("Song :" + s.getTitle()+ "has been created !\n");
         musicHub.addElement(s);
@@ -155,32 +108,13 @@ public class RequestManager {
 
     public void createAlbum() throws IOException, ClassNotFoundException {
         out.writeObject("Title :");
-        Object aTitle,aArtist,aLength,aDate;
-        do{
-            aTitle = in.readObject();
-            if(aTitle==""){out.writeObject("The title should not be empty");}
-        }while (aTitle=="");
+        Object aTitle = in.readObject();
         out.writeObject("Artiste :");
-        do{
-            aArtist = in.readObject();
-            if(aArtist==""){out.writeObject("The artist should not be empty");}
-        }while (aArtist=="");
+        Object aArtist = in.readObject();
         out.writeObject("Lenght :");
-        Integer number;
-        do{
-            aLength = in.readObject();
-            try{
-            number=(Integer.parseInt((String)aLength));
-            }catch (NumberFormatException e){ out.writeObject("un nombre entier est attendu");}
-            if(aLength=="" || (Integer.parseInt((String)aLength)<1)){out.writeObject("The Length format is not valid");}
-        }while (aLength=="" || (Integer.parseInt((String)aLength)<1));
+        Object aLength = in.readObject();
         out.writeObject("Date : (format : YYYY-DD-MM)");
-        String date;
-        do{
-            aDate = in.readObject();
-            date=(String)aDate;
-            if(date.length()<10 || date.length()>10 || date.charAt(4)!='-' || date.charAt(7)!='-'){out.writeObject("The date format is not valid, try again");}
-        }while (date.length()<10 || date.charAt(4)!='-' || date.charAt(7)!='-');
+        Object aDate = in.readObject();
         Album a = new Album((String) aTitle,(String) aArtist,Integer.parseInt((String)aLength),(String)aDate);
         out.writeObject("Album : "+a.getTitle()+" has been created !\n");
         musicHub.addAlbum(a);
@@ -190,34 +124,20 @@ public class RequestManager {
 
     public void createPlaylist() throws IOException, ClassNotFoundException {
         out.writeObject("Type the name of the playlist you wish to create:");
-        Object titlePlaylist;
-        do{
-            titlePlaylist = in.readObject();
-            if(titlePlaylist==""){out.writeObject("The name should not be empty");}
-            }while (titlePlaylist=="");
+        Object titlePlaylist = in.readObject();
         PlayList pl = new PlayList((String) titlePlaylist);
         out.writeObject("Playlist " + pl.getTitle() + " is created\n");
         musicHub.addPlaylist(pl);
         musicHub.savePlayLists();
     }
 
-
     public void loadData() throws IOException {
         musicHubClient.playlists.clear();
-        for (Iterator<PlayList> playlistsIter = musicHub.playlists(); playlistsIter.hasNext();) {
-            PlayList currentPlayList = playlistsIter.next();
-            musicHubClient.playlists.add(currentPlayList);
-        }
+        musicHubClient.playlists.addAll(musicHub.playlists);
         musicHubClient.albums.clear();
-        for (Iterator<Album> albumsIter = musicHub.albums(); albumsIter.hasNext();) {
-            Album currentAlbum = albumsIter.next();
-            musicHubClient.albums.add(currentAlbum);
-        }
+        musicHubClient.albums.addAll(musicHub.albums);
         musicHubClient.elements.clear();
-        for (Iterator<AudioElement> audioElementIter = musicHub.elements(); audioElementIter.hasNext();) {
-            AudioElement currentElement = audioElementIter.next();
-            musicHubClient.elements.add(currentElement);
-        }
+        musicHubClient.elements.addAll(musicHub.elements);
         out.writeObject("Data has refresh");
     }
 
@@ -256,94 +176,33 @@ public class RequestManager {
     }
 
     public void remove_playlists() throws IOException, ClassNotFoundException, NoPlayListFoundException {
-
         out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
-
-        int test;
-        do {
-            cmd=(String)in.readObject();
-            test=musicHub.getTitlePlaylist().indexOf((String) cmd);
-            if ( test!= -1) {
-                musicHub.deletePlayList((String) cmd);
-                out.writeObject("the playlist has been removed");
-            }
-            else{out.writeObject("the playlist you are trying to remove doesn't exist");}
-        }while(test== -1);
-
+        cmd=in.readObject();
+        musicHub.deletePlayList((String)cmd);
+        out.writeObject("the playlist has been removed");
         musicHub.savePlayLists();
     }
 
     public void remove_albums() throws IOException, ClassNotFoundException,NoAlbumFoundException {
 
         out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
-
-
-        int test;
-        do {
-            cmd=(String)in.readObject();
-            test=musicHub.getTitleAlbum().indexOf((String) cmd);
-            if ( test!= -1) {
-
-                Album theAlbum = null;
-                boolean result = false;
-                for (Album al : musicHub.albums) {
-                    if (al.getTitle().toLowerCase().equals(((String) cmd).toLowerCase())) {
-                        theAlbum = al;
-                        break;
-                    }
-                }
-
-                if (theAlbum != null)
-                    result = musicHub.albums.remove(theAlbum);
-                musicHubClient.albums.remove(theAlbum);
-                if (!result) throw new NoAlbumFoundException("Album " + ((String) cmd) + " not found!");
-
-
-                out.writeObject("the album has been removed");
-            }
-            else{out.writeObject("the album you are trying to remove doesn't exist");}
-        }while(test== -1);
+        cmd=in.readObject();
+        musicHub.deleteAlbum((String)cmd);
+        out.writeObject("the album has been removed");
         musicHub.saveAlbums();
     }
 
     public void remove_elements() throws IOException, ClassNotFoundException, NoElementFoundException {
-
         out.writeObject("tapez le nom du son que vous souhaitez supprimer");
-
-
-        int test;
-        do {
-            cmd=(String)in.readObject();
-            test=musicHub.getTitleSongs().indexOf((String) cmd);
-            if ( test!= -1) {
-
-        AudioElement theElement= null;
-        boolean result = false;
-        for (AudioElement el : musicHub.elements) {
-            if (el.getTitle().toLowerCase().equals(((String)cmd).toLowerCase())) {
-                theElement = el;
-                break;
-            }
-        }
-
-        if (theElement != null)
-            result = musicHub.elements.remove(theElement);
-        musicHubClient.elements.remove(theElement);
-        if (!result) throw new NoElementFoundException("song " + ((String)cmd) + " not found!");
-
-
-
-
+        cmd=in.readObject();
+        musicHub.deleteElement((String)cmd);
         out.writeObject("the song has been removed");
-            }
-            else{out.writeObject("the song you are trying to remove doesn't exist");}
-        }while(test== -1);
         musicHub.saveElements();
     }
 
-
     private void printAvailableCommands() throws IOException {
         StringBuffer menu =new StringBuffer();
+        menu.append("play: play a song | press 'Stop' to stop");
         menu.append("a: display the album titles \n");
         menu.append("p: display the playlist titles \n");
         menu.append("s: display all songs \n");
@@ -356,15 +215,8 @@ public class RequestManager {
         menu.append("l: refresh database\n");
         menu.append("c: cancel changes\n");
         menu.append("h: menu \n");
-        menu.append(" \n");
+        menu.append("\n");
         out.writeObject(menu);
-        /*
-        System.out.println("+: add a song to an album");
-        System.out.println("p: create a new playlist from existing songs and audio books");
-        System.out.println("-: delete an existing playlist");
-        System.out.println(");
-        System.out.println("q: quit program");
-         */
     }
 
 }
