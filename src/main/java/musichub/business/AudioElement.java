@@ -4,11 +4,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.UUID;
-
+/**
+ * This class is an abstraction for the song type
+ */
 public abstract class AudioElement {
-	/**
-	 * This class is an abstraction for the song type
-	 */
+
 	protected String  	title;
 	protected String 	artist;
 	protected int    	lengthInSeconds;

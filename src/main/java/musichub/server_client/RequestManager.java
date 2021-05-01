@@ -17,11 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 import musichub.util.XMLHandler;
 import org.w3c.dom.NodeList;
-
+/**
+ * This class regroups all requests the Client can send to the server
+ */
 public class RequestManager {
-    /**
-     * This class regroups all requests the Client can send to the server
-     */
+
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;

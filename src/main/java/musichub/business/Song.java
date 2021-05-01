@@ -3,11 +3,11 @@ package musichub.business;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
+/**
+ * This class handles the Song type
+ */
 public class Song extends AudioElement {
-	/**
-	 * This class handles the Song type
-	 */
+
 	private Genre genre;
 	
 	public Song (String title, String artist, int length, String uid, String content, String genre) {

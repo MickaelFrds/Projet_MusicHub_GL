@@ -29,11 +29,11 @@ class SortByAuthor implements Comparator<AudioElement>
 			return e1.getArtist().compareTo(e2.getArtist());
 	} 
 }
-
+/**
+ * This class handles the musichub instances and all its methods
+ */
 public class MusicHub {
-	/**
-	 * This class handles the musichub instances and all its methods
- 	 */
+
 	public  List<Album> albums;
 	public  List<PlayList> playlists;
 	public  List<AudioElement> elements;

@@ -16,11 +16,11 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 
-
+/**
+ * This class handles the actions related to XML files used to save changes
+ */
 public class XMLHandler {
-	/**
-	 * This class handles the actions related to XML files used to save changes
-	 */
+
 	TransformerFactory transformerFactory;
 	Transformer transformer;
 	DocumentBuilderFactory documentFactory;

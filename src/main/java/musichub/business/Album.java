@@ -9,11 +9,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
+/**
+ * This class handles the Album type
+ */
 public class Album extends Groupsong {
-	/**
-	 * This class handles the Album type
-	 */
+
 	private String artist;
 	private int lengthInSeconds;
 	private Date date;

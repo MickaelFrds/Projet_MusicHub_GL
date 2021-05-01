@@ -5,11 +5,11 @@ import javax.sound.sampled.AudioInputStream;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
-
+/**
+ * This class handles the client sockets
+ */
 public class Client {
-    /**
-     * This class handles the client sockets
-     */
+
     private Socket socket;
     private ObjectOutputStream out;
     ObjectInputStream in;

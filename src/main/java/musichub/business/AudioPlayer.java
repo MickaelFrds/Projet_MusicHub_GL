@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
+/**
+ * This class handles the reading of audio files
+ */
 public class AudioPlayer {
-    /**
-     * This class handles the reading of audio files
-     */
+
     private ObjectInputStream in;
     private File file;
     private AudioInputStream audioInput;

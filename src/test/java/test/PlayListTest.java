@@ -5,13 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import musichub.Exception.NoPlayListFoundException;
 import musichub.business.MusicHub;
 import musichub.business.PlayList;
-
+/**
+ * This class regroups some tests on the PlayList class
+ */
 class PlayListTest {
-    /**
-     * This class regroups some tests on the PlayList class
-     * @param args
-     * @throws NoPlayListFoundException
-     */
+
 
     public static void main(String[] args) throws NoPlayListFoundException {
 

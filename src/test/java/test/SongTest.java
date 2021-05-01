@@ -5,13 +5,11 @@ import musichub.Exception.NoElementFoundException;
 import musichub.business.AudioElement;
 import musichub.business.MusicHub;
 import musichub.business.Song;
-
+/**
+ * This class regroups some tests on the Song class
+ */
 public class SongTest {
-    /**
-     * This class regroups some tests on the Song class
-     * @param args
-     * @throws NoElementFoundException
-     */
+
 
     public static void main(String[] args) throws NoElementFoundException {
 

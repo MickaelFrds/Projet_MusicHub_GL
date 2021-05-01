@@ -5,13 +5,11 @@ import musichub.business.Album;
 import musichub.business.MusicHub;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * This class regroups some tests on the Album class
+ */
 class AlbumTest {
-    /**
-     * This class regroups some tests on the Album class
-     * @param args
-     * @throws NoAlbumFoundException
-     */
+
     public static void main(String[] args) throws NoAlbumFoundException {
 
 
