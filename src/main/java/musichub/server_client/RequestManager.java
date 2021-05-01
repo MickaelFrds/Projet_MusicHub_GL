@@ -108,16 +108,45 @@ public class RequestManager {
     }
 
     public void createSong() throws IOException, ClassNotFoundException {
+        Object sTitle,sArtist,sLength,sContent, sGenre;
         out.writeObject("Title :");
-        Object sTitle = in.readObject();
+        do{
+            sTitle = in.readObject();
+            if(sTitle==""){out.writeObject("The title should not be empty");}
+        }while (sTitle=="");
         out.writeObject("Artiste :");
-        Object sArtist = in.readObject();
+        do{
+            sArtist = in.readObject();
+            if(sArtist==""){out.writeObject("The artist should not be empty");}
+        }while (sArtist=="");
         out.writeObject("Length :");
-        Object sLength = in.readObject();
+        Integer number;
+        do{
+            sLength = in.readObject();
+            try{
+                number=(Integer.parseInt((String)sLength));
+            }catch (NumberFormatException e){ System.err.println("un nombre entier est attendu");}
+            if(sLength=="" || (Integer.parseInt((String)sLength)<1)){out.writeObject("The Length format is not valid");}
+        }while (sLength=="" || (Integer.parseInt((String)sLength)<1));
         out.writeObject("Content :");
-        Object sContent = in.readObject();
+        do{
+            sContent = in.readObject();
+            if(sContent==""){out.writeObject("The content should not be empty");}
+        }while (sContent=="");
         out.writeObject("Genre : (jazz,classic,hiphop,rock,pop,rap)");
-        Object sGenre = in.readObject();
+        String type;
+        List<String> type2 = new LinkedList<>();
+        type2.add("jazz");
+        type2.add("classic");
+        type2.add("pop");
+        type2.add("hiphop");
+        type2.add("rock");
+        type2.add("rap");
+        do{
+            sGenre = in.readObject();
+            type=(String) sGenre;
+            if(!type2.contains(type)){out.writeObject("The genre doesn't match, try again");}
+        }while (!type2.contains(type));
         Song s =new Song( (String) sTitle, (String) sArtist, Integer.parseInt((String) sLength) , (String) sContent, (String) sGenre);
         out.writeObject("Song :" + s.getTitle()+ "has been created !\n");
         musicHub.addElement(s);
