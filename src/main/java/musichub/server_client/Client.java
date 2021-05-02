@@ -49,7 +49,7 @@ public class Client {
                 Thread thread = new Thread(p);
                 thread.start();
         }
-            if (cmd.equals("Client")) {
+            if (cmd.equalsIgnoreCase("stop")) {
                 p.stop();
             }
         }

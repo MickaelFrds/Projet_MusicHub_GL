@@ -27,6 +27,10 @@ class SortByAuthor implements Comparator<AudioElement> {
     }
 }
 
+/**
+ * This class handles the musichub instances and all its methods
+ */
+
 public class MusicHub {
     public List<Album> albums;
     public List<PlayList> playlists;
@@ -99,7 +103,7 @@ public class MusicHub {
         }
         if (theElement != null)
             albums.remove(theElement);
-        if (theElement == null) throw new NoElementFoundException("Album " + elementTitle + " not found!");
+        if (theElement == null) throw new NoElementFoundException("Element " + elementTitle + " not found!");
     }
 
     public Iterator<Album> albums() {

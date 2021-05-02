@@ -1,6 +1,7 @@
 package musichub.business;
 
 public enum Language {
+
     FRENCH("french"),
     ENGLISH("english"),
     ITALIAN("italian"),

@@ -4,9 +4,11 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * This class handles the reading of audio files
+ */
 
 public class AudioPlayer implements Runnable {
-
 
     private AudioInputStream audioInput;
     private AudioFormat audioFormat;
@@ -14,7 +16,6 @@ public class AudioPlayer implements Runnable {
     private byte[] tab;
     private SourceDataLine line;
     private boolean stop = false;
-
 
     public AudioPlayer(File file) {
         try {
@@ -27,6 +28,7 @@ public class AudioPlayer implements Runnable {
             this.line = (SourceDataLine) AudioSystem.getLine((info));
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
+            System.out.println("file not found");
         }
     }
 
@@ -35,16 +37,17 @@ public class AudioPlayer implements Runnable {
             line.open(audioFormat);
             line.start();
             int nb;
-            while (!stop) {
-                if ((nb = audioInput.read(tab, 0, numBytes)) == -1) {
+            while ((nb = audioInput.read(tab, 0, numBytes)) != -1) {
+                line.write(tab, 0, nb);
+                if (stop){
                     line.close();
                     return;
                 }
-                    line.write(tab, 0, nb);
-                line.close();
             }
+            line.close();
         } catch (LineUnavailableException | IOException e) {
             e.printStackTrace();
+            System.out.println("Can't run the audioPlayer");
         }
     }
 

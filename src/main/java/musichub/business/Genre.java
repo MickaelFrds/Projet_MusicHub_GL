@@ -1,5 +1,9 @@
 package musichub.business;
 
+/**
+ * This enumeration contains all the types a music can have
+ */
+
 public enum Genre {
 
     JAZZ("jazz"),

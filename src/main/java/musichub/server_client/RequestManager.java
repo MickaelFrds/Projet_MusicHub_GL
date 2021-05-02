@@ -1,6 +1,5 @@
 package musichub.server_client;
 
-import musichub.Exception.ConnectionFailedException;
 import musichub.Exception.NoAlbumFoundException;
 import musichub.Exception.NoElementFoundException;
 import musichub.Exception.NoPlayListFoundException;
@@ -14,15 +13,15 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * This class regroups all requests the Client can send to the server
+ */
 
 public class RequestManager {
-    /**
-     *
-     */
 
 
-    private final ObjectInputStream in;
-    private final ObjectOutputStream out;
+    private  ObjectInputStream in;
+    private  ObjectOutputStream out;
     MusicHub musicHub = new MusicHub();
     MusicHub musicHubClient = new MusicHub();
 
@@ -32,14 +31,13 @@ public class RequestManager {
     Object cmd;
 
 
-    public RequestManager(Socket socket) throws ConnectionFailedException {
+    public RequestManager(Socket socket)  {
         try {
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            throw new ConnectionFailedException("Connexion failed.");
+            e.printStackTrace();
         }
-
     }
 
     public void request(){
@@ -62,19 +60,19 @@ public class RequestManager {
                     case "l" -> loadData();
                     case "c" -> cancelchanges();
                     case "h" -> printAvailableCommands();
+                    case "Stop" -> out.writeObject("AudioPlayer is stopped");
                     default -> {
-                        envoi = "";
+                        envoi = "Please retry ! This command doesn't exist";
                         out.writeObject(envoi);
                     }
                 }
                 cmd = in.readObject();
             }
-        } catch (IOException | ClassNotFoundException | NoPlayListFoundException | NoAlbumFoundException | NoElementFoundException e) {
+        } catch (IOException | ClassNotFoundException e ) {
             e.printStackTrace();
         }
 
     }
-
 
     public void sendAlbum() throws IOException {
         StringBuilder text =new StringBuilder();
@@ -206,6 +204,7 @@ public class RequestManager {
             out.writeObject(file);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            System.out.println("file not found");
         }
     }
 
@@ -231,34 +230,49 @@ public class RequestManager {
         out.writeObject("changes has been canceled");
     }
 
-    public void remove_playlists() throws IOException, ClassNotFoundException, NoPlayListFoundException {
-        out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deletePlayList((String)cmd);
-        out.writeObject("the playlist has been removed");
-        musicHub.savePlayLists();
+    public void remove_playlists() throws IOException, ClassNotFoundException {
+        try {
+            out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
+            cmd=in.readObject();
+            musicHub.deletePlayList((String)cmd);
+            out.writeObject("the playlist has been removed");
+            musicHub.savePlayLists();
+        } catch (NoPlayListFoundException e){
+            e.printStackTrace();
+            out.writeObject("the playlist not found");
+        }
+
     }
 
-    public void remove_albums() throws IOException, ClassNotFoundException,NoAlbumFoundException {
-
-        out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deleteAlbum((String)cmd);
-        out.writeObject("the album has been removed");
-        musicHub.saveAlbums();
+    public void remove_albums() throws IOException, ClassNotFoundException {
+        try {
+            out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
+            cmd=in.readObject();
+            musicHub.deleteAlbum((String)cmd);
+            out.writeObject("the album has been removed");
+            musicHub.saveAlbums();
+        }catch (NoAlbumFoundException e){
+            e.printStackTrace();
+            out.writeObject("the album not found");
+        }
     }
 
-    public void remove_elements() throws IOException, ClassNotFoundException, NoElementFoundException {
-        out.writeObject("tapez le nom du son que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deleteElement((String)cmd);
-        out.writeObject("the song has been removed");
-        musicHub.saveElements();
+    public void remove_elements() throws IOException, ClassNotFoundException {
+        try {
+            out.writeObject("tapez le nom du son que vous souhaitez supprimer");
+            cmd=in.readObject();
+            musicHub.deleteElement((String)cmd);
+            out.writeObject("the song has been removed");
+            musicHub.saveElements();
+        }catch (NoElementFoundException e){
+            e.printStackTrace();
+            out.writeObject("the element not found");
+        }
     }
 
-    private void printAvailableCommands() throws IOException {
+    private void printAvailableCommands() {
         StringBuffer menu =new StringBuffer();
-        menu.append("play: play a song | press 'Stop' to stop");
+        menu.append("play: play a song | press 'Stop' to stop AudioPlayer\n");
         menu.append("a: display the album titles \n");
         menu.append("p: display the playlist titles \n");
         menu.append("s: display all songs \n");
@@ -272,7 +286,12 @@ public class RequestManager {
         menu.append("c: cancel changes\n");
         menu.append("h: menu \n");
         menu.append("\n");
-        out.writeObject(menu);
+        try {
+            out.writeObject(menu);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
 }

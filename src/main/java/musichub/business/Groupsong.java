@@ -2,6 +2,10 @@ package musichub.business;
 import org.w3c.dom.Element;
 import java.util.UUID;
 
+/**
+ * This class is an abstraction for playlists and albums
+ */
+
 public abstract class Groupsong {
 
     protected String title;

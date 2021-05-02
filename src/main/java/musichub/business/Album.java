@@ -9,6 +9,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * This class handles the Album type
+ */
+
 public class Album extends Groupsong {
 
 	private String artist;
@@ -61,8 +65,7 @@ public class Album extends Groupsong {
 			throw ex;
 		}
 	}
-	
-	
+
 	public void addSong (UUID song)
 	{
 		songsUIDs.add(song);
