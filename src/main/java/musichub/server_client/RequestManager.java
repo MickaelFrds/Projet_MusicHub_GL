@@ -5,10 +5,6 @@ import musichub.Exception.NoAlbumFoundException;
 import musichub.Exception.NoElementFoundException;
 import musichub.Exception.NoPlayListFoundException;
 import musichub.business.*;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -47,7 +43,7 @@ public class RequestManager {
         String envoi;
         try {
             cmd = in.readObject();
-            while (!(cmd).equals("q")){
+            while (!((cmd)==("q"))){
                 switch ((String) cmd) {
                     case "a" -> sendAlbum();
                     case "p" -> sendPlaylist();
@@ -203,10 +199,14 @@ public class RequestManager {
             Object titleSong = in.readObject();
             String chemin = System.getProperty("user.dir") + "\\files\\" + titleSong + ".wav";
             File file=new File(chemin);
+            AudioPlayer audio = new AudioPlayer(file);
             out.writeObject(file);
+            audio.run();
+            printAvailableCommands();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
     public void cancelchanges() throws IOException{
@@ -232,33 +232,58 @@ public class RequestManager {
     }
 
     public void remove_playlists() throws IOException, ClassNotFoundException, NoPlayListFoundException {
-        out.writeObject("tapez le nom de la playlist que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deletePlayList((String)cmd);
-        out.writeObject("the playlist has been removed");
+        out.writeObject("What is the name of the playlist you want to delete");
+        int value;
+        do{
+            cmd=in.readObject();
+            value=musicHub.getTitlePlaylist().indexOf((String)cmd);
+        if(value!=-1) {
+            musicHub.deletePlayList((String) cmd);
+
+            out.writeObject("The playlist has been removed");
+        }
+        else{out.writeObject("The playlist you are trying to delete doesn't exist");}
+        }while(value==-1);
+
         musicHub.savePlayLists();
     }
 
     public void remove_albums() throws IOException, ClassNotFoundException,NoAlbumFoundException {
 
-        out.writeObject("tapez le nom de l'album que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deleteAlbum((String)cmd);
-        out.writeObject("the album has been removed");
+        out.writeObject("What is the name of the album you want to delete");
+        int value;
+        do{
+            cmd=in.readObject();
+            value=musicHub.getTitleAlbum().indexOf((String)cmd);
+            if(value!=-1) {
+                musicHub.deleteAlbum((String) cmd);
+
+                out.writeObject("The album has been removed");
+            }
+            else{out.writeObject("The album you are trying to delete doesn't exist");}
+        }while(value==-1);
         musicHub.saveAlbums();
     }
 
     public void remove_elements() throws IOException, ClassNotFoundException, NoElementFoundException {
-        out.writeObject("tapez le nom du son que vous souhaitez supprimer");
-        cmd=in.readObject();
-        musicHub.deleteElement((String)cmd);
-        out.writeObject("the song has been removed");
+        out.writeObject("What is the name of the song you want to delete");
+        int value;
+        do{
+            cmd=in.readObject();
+            value=musicHub.getTitleSongs().indexOf((String)cmd);
+            if(value!=-1) {
+                musicHub.deleteElement((String) cmd);
+
+                out.writeObject("The song has been removed");
+            }
+            else{out.writeObject("The song you are trying to delete doesn't exist");}
+        }while(value==-1);
         musicHub.saveElements();
     }
 
     private void printAvailableCommands() throws IOException {
         StringBuffer menu =new StringBuffer();
-        menu.append("play: play a song | press 'Stop' to stop");
+        menu.append("play: play a song | press 'Stop' to stop\n");
         menu.append("a: display the album titles \n");
         menu.append("p: display the playlist titles \n");
         menu.append("s: display all songs \n");
@@ -271,6 +296,7 @@ public class RequestManager {
         menu.append("l: refresh database\n");
         menu.append("c: cancel changes\n");
         menu.append("h: menu \n");
+        menu.append("q: quit the application \n");
         menu.append("\n");
         out.writeObject(menu);
     }
