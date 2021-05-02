@@ -98,8 +98,8 @@ public class MusicHub {
             }
         }
         if (theElement != null)
-            albums.remove(theElement);
-        if (theElement == null) throw new NoElementFoundException("Album " + elementTitle + " not found!");
+            elements.remove(theElement);
+        if (theElement == null) throw new NoElementFoundException("Song " + elementTitle + " not found!");
     }
 
     public Iterator<Album> albums() {

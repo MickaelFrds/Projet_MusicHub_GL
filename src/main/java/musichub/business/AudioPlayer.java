@@ -36,11 +36,13 @@ public class AudioPlayer implements Runnable {
             line.start();
             int nb;
             while (!stop) {
-                if ((nb = audioInput.read(tab, 0, numBytes)) == -1) {
-                    line.close();
-                    return;
-                }
+                while((nb=audioInput.read(tab, 0, numBytes))!=-1) {
+                    if (nb == -1) {
+                        line.close();
+                        return;
+                    }
                     line.write(tab, 0, nb);
+                }
                 line.close();
             }
         } catch (LineUnavailableException | IOException e) {
