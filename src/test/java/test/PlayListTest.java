@@ -2,9 +2,9 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import musichub.Exception.NoPlayListFoundException;
-import musichub.business.MusicHub;
-import musichub.business.PlayList;
+import musichub.Server.Exception.NoPlayListFoundException;
+import musichub.Server.business.MusicHub;
+import musichub.Server.business.PlayList;
 /**
  * This class regroups some tests on the PlayList class
  */
