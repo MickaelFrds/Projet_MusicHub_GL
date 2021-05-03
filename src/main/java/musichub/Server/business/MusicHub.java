@@ -110,7 +110,7 @@ public class MusicHub {
             }
         }
         if (theElement != null)
-            albums.remove(theElement);
+            elements.remove(theElement);
         if (theElement == null) {
             Erreurs erreurs = new Erreurs();
             erreurs.WriteError("Element " + elementTitle + " not found!");

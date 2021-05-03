@@ -60,7 +60,7 @@ public class RequestManager {
                     case "l" -> loadData();
                     case "c" -> cancelchanges();
                     case "h" -> printAvailableCommands();
-                    case "Stop" -> out.writeObject("AudioPlayer is stopped");
+                    case "stop" -> out.writeObject("AudioPlayer is stopped");
                     default -> {
                         envoi = "Please retry ! This command doesn't exist";
                         out.writeObject(envoi);
