@@ -1,10 +1,10 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import musichub.Exception.NoElementFoundException;
-import musichub.business.AudioElement;
-import musichub.business.MusicHub;
-import musichub.business.Song;
+import musichub.Server.Exception.NoElementFoundException;
+import musichub.Server.business.AudioElement;
+import musichub.Server.business.MusicHub;
+import musichub.Server.business.Song;
 /**
  * This class regroups some tests on the Song class
  */

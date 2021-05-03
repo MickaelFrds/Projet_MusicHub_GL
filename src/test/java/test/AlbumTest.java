@@ -1,8 +1,8 @@
 package test;
 
-import musichub.Exception.NoAlbumFoundException;
-import musichub.business.Album;
-import musichub.business.MusicHub;
+import musichub.Server.Exception.NoAlbumFoundException;
+import musichub.Server.business.Album;
+import musichub.Server.business.MusicHub;
 
 import static org.junit.jupiter.api.Assertions.*;
 /**
