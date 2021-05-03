@@ -1,8 +1,17 @@
 package musichub.Client;
 
+import musichub.Erreurs;
+
 import javax.sound.sampled.*;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 /**
  * This class handles the reading of audio files
@@ -17,7 +26,7 @@ public class AudioPlayer implements Runnable {
     private SourceDataLine line;
     private boolean stop = false;
 
-    public AudioPlayer(File file) {
+    public AudioPlayer(File file) throws IOException {
         try {
             this.audioInput = AudioSystem.getAudioInputStream(file);
             int bytesPerFrame = audioInput.getFormat().getFrameSize();
@@ -27,8 +36,9 @@ public class AudioPlayer implements Runnable {
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
             this.line = (SourceDataLine) AudioSystem.getLine((info));
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-            System.out.println("file not found");
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("file not found !" );
+            System.out.println("file not found ! Please retry");
         }
     }
 
@@ -46,7 +56,8 @@ public class AudioPlayer implements Runnable {
             }
             line.close();
         } catch (LineUnavailableException | IOException e) {
-            e.printStackTrace();
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("Can't run the audioPlayer" );
             System.out.println("Can't run the audioPlayer");
         }
     }

@@ -1,5 +1,6 @@
 package musichub.Server.business;
 
+import musichub.Erreurs;
 import musichub.Server.util.XMLHandler;
 import musichub.Server.Exception.*;
 import org.w3c.dom.Document;
@@ -74,10 +75,13 @@ public class MusicHub {
                 break;
             }
         }
-
         if (thePlayList != null)
             result = playlists.remove(thePlayList);
-        if (!result) throw new NoPlayListFoundException("Playlist " + playListTitle + " not found!");
+        if (!result) {
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("Playlist " + playListTitle + " not found!" );
+            throw new NoPlayListFoundException("Playlist " + playListTitle + " not found!");
+        }
     }
 
     public void deleteAlbum(String albumTilte) throws NoAlbumFoundException {
@@ -90,7 +94,11 @@ public class MusicHub {
         }
         if (theAlbum != null)
             albums.remove(theAlbum);
-        if (theAlbum == null) throw new NoAlbumFoundException("Album " + albumTilte + " not found!");
+        if (theAlbum == null) {
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("Album " + albumTilte + " not found!" );
+            throw new NoAlbumFoundException("Album " + albumTilte + " not found!");
+        }
     }
 
     public void deleteElement(String elementTitle) throws NoElementFoundException {
@@ -103,7 +111,11 @@ public class MusicHub {
         }
         if (theElement != null)
             albums.remove(theElement);
-        if (theElement == null) throw new NoElementFoundException("Element " + elementTitle + " not found!");
+        if (theElement == null) {
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("Element " + elementTitle + " not found!");
+            throw new NoElementFoundException("Element " + elementTitle + " not found!");
+        }
     }
 
     public Iterator<Album> albums() {
@@ -276,6 +288,8 @@ public class MusicHub {
                     try {
                         this.addAlbum(new Album(albumElement));
                     } catch (Exception ex) {
+                        Erreurs erreurs = new Erreurs();
+                        erreurs.WriteError("Something is wrong with the XML album element");
                         System.out.println("Something is wrong with the XML album element");
                     }
                 }
@@ -294,6 +308,8 @@ public class MusicHub {
                     try {
                         this.addPlaylist(new PlayList(playlistElement));
                     } catch (Exception ex) {
+                        Erreurs erreurs = new Erreurs();
+                        erreurs.WriteError("Something is wrong with the XML playlist element");
                         System.out.println("Something is wrong with the XML playlist element");
                     }
                 }
@@ -313,6 +329,8 @@ public class MusicHub {
                         AudioElement newSong = new Song(audioElement);
                         this.addElement(newSong);
                     } catch (Exception ex) {
+                        Erreurs erreurs = new Erreurs();
+                        erreurs.WriteError("Something is wrong with the XML song element");
                         System.out.println("Something is wrong with the XML song element");
                     }
                 }
@@ -321,6 +339,8 @@ public class MusicHub {
                         AudioElement newAudioBook = new AudioBook(audioElement);
                         this.addElement(newAudioBook);
                     } catch (Exception ex) {
+                        Erreurs erreurs = new Erreurs();
+                        erreurs.WriteError("Something is wrong with the XML audiobook element");
                         System.out.println("Something is wrong with the XML audiobook element");
                     }
                 }

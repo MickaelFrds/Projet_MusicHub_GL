@@ -1,5 +1,6 @@
 package musichub.Server.business;
 
+import musichub.Erreurs;
 import musichub.Server.Exception.NoAlbumFoundException;
 import musichub.Server.Exception.NoElementFoundException;
 import musichub.Server.Exception.NoPlayListFoundException;
@@ -202,7 +203,8 @@ public class RequestManager {
             File file=new File(chemin);
             out.writeObject(file);
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Erreurs erreurs = new Erreurs();
+            erreurs.WriteError("file not found" );
             System.out.println("file not found");
         }
     }

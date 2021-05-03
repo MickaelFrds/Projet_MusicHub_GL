@@ -28,6 +28,7 @@ public class Album extends Groupsong {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			this.date = sdf.parse(date);
 		} catch (ParseException ex) {
+
 			ex.printStackTrace();
 		}
 		this.songsUIDs = new ArrayList<>();
